@@ -16,18 +16,18 @@ cat ./neardev/dev-account
 # e.g. dev-1659899566943-21539992274727
 ```
 
-## 1. Get Number of Donations
+## 1. Subscribe
 
-`deposit` forwards any attached money to the `beneficiary` while keeping track of it.
+`subscribe` forwards any attached money to the `vault` while keeping track of it.
 
-`deposit` is a payable method for which can only be invoked using a NEAR account. The account needs to attach money and pay GAS for the transaction.
+`subscribe` is a payable method for which can only be invoked using a NEAR account. The account needs to attach money and pay GAS for the transaction.
 
 ```bash
-# Use near-cli to deposit 1 NEAR
-near call <dev-account> deposit --amount 3 --accountId <account>
+# Use near-cli to deposit 3 NEAR
+near call <dev-account> subscribe --amount 3 --accountId <account>
 ```
 
-**Tip:** If you would like to `deposit` using your own account, first login into NEAR using:
+**Tip:** If you would like to `subscribe` using your own account, first login into NEAR using:
 
 ```bash
 # Use near-cli to login your NEAR account
@@ -35,6 +35,34 @@ near login
 ```
 
 and then use the logged account to sign the transaction: `--accountId <your-account>`.
+
+## 2. Unatake & Withdraw
+
+Once a year the 12 months past you can `unstake` your NEARs and after a few days you can `withdraw` that money without 3% commission for the academy.
+
+```bash
+# After 12 months and at least with 3 NEARs in the susbcription method
+near call <dev-account> unstake --accountId <your-account>
+
+# A few days later to withdraw your stake NEARs
+near call <dev-account> withdraw -- accountId <your-account>
+```
+
+## 3. Get Methods
+
+```bash
+## Get amount staked from a member
+near view <dev-account> get_amount_for_account '{"account_id":"<your-account>"}'
+
+## Get amount to unstake from a member once you called the method "unstake"
+near view <dev-account> get_amount_to_unstake '{"account_id":"<your-account>"}'
+
+## Get numbers of members
+near view <dev-account> number_of_members 
+
+## Get a list of members
+near view <dev-account>9 get_memberships '{"from_index":"0","limit":5}'
+```
 
 
 ### Methods for stNEAR from Metapool

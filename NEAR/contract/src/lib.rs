@@ -11,20 +11,18 @@ pub type CryptoHash = [u8; 32];
 
 use crate::internal::*;
 pub use crate::xcc::*;
-pub use crate::metadata::*;
-pub use crate::deposit::*;
+pub use crate::subscribe::*;
 pub use crate::enumeration::*;
 
 mod internal;
-mod deposit;
+mod subscribe;
 mod xcc;
-mod metadata;
 mod enumeration;
 
 #[near_bindgen]
 #[derive(BorshDeserialize, BorshSerialize)]
 pub struct Contract {
-  pub beneficiary: AccountId,
+  pub vault: AccountId,
   pub total_deposit: UnorderedMap<AccountId, u128>,
   pub timelocked: UnorderedMap<AccountId, Timestamp>,
   pub deposit_to_withdraw: UnorderedMap<AccountId, u128>,
@@ -42,7 +40,7 @@ pub enum StorageKey {
 impl Default for Contract {
   fn default() -> Self {
     Self{
-      beneficiary: "one.stakedemy.testnet".parse().unwrap(),
+      vault: "stakedemy.testnet".parse().unwrap(),
       metapoolcontract: "meta-v2.pool.testnet".parse().unwrap(),
       total_deposit: UnorderedMap::new(b"a"),
       timelocked: UnorderedMap::new(b"d"),
@@ -56,9 +54,9 @@ impl Default for Contract {
 impl Contract {
   #[init]
   #[private] // Public - but only callable by env::current_account_id()
-  pub fn init(beneficiary: AccountId) -> Self {
+  pub fn init(vault: AccountId) -> Self {
     Self {
-      beneficiary,
+      vault,
       metapoolcontract: "meta-v2.pool.testnet".parse().unwrap(),
       deposit_to_withdraw: UnorderedMap::new(b"c"),
       timelocked: UnorderedMap::new(b"d"),
@@ -67,14 +65,14 @@ impl Contract {
     }
   }
 
-  // Public - beneficiary getter
-  pub fn get_beneficiary(&self) -> AccountId {
-    self.beneficiary.clone()
+  // Public - vault getter
+  pub fn get_vault(&self) -> AccountId {
+    self.vault.clone()
   }
 
-  // Public - but only callable by env::current_account_id(). Sets the beneficiary
+  // Public - but only callable by env::current_account_id(). Sets the vault
   #[private]
-  pub fn change_beneficiary(&mut self, beneficiary: AccountId) {
-    self.beneficiary = beneficiary;
+  pub fn change_vault(&mut self, vault: AccountId) {
+    self.vault = vault;
   }
 }
